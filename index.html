@@ -1,121 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Reflex Game ⚡</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: radial-gradient(circle at top, #0ff, #020024);
-      color: #0ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<title>Neon Click – Cyber Reflex Game</title>
 
-    .card {
-      background: rgba(0, 0, 0, 0.7);
-      border: 2px solid #0ff;
-      border-radius: 16px;
-      padding: 24px;
-      width: 340px;
-      text-align: center;
-      box-shadow: 0 0 30px #0ff;
-    }
+<!-- SEO -->
+<meta name="description" content="Neon Click is a fast-paced cyberpunk reflex clicking game. Test your speed, beat combos, and reach the leaderboard!">
+<meta name="keywords" content="neon game, clicking game, reflex game, javascript game, cyberpunk game">
+<meta name="author" content="NeonClick Dev">
 
-    h1 {
-      margin-top: 0;
-      text-shadow: 0 0 10px #0ff;
-    }
+<style>
+:root {
+  --neon: #00fff7;
+  --pink: #ff2cdf;
+  --bg: #05050a;
+}
 
-    button {
-      background: #0ff;
-      color: #000;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 0 15px #0ff;
-      transition: transform 0.15s;
-    }
+* { box-sizing: border-box; }
 
-    button:hover {
-      transform: scale(1.05);
-    }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: radial-gradient(circle at top, #0b0b1f, #020208);
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+}
 
-    .box {
-      margin: 20px auto;
-      width: 100px;
-      height: 100px;
-      background: #ff00ff;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #ff00ff;
-      cursor: pointer;
-      display: none;
-    }
+/* ---------- NAV ---------- */
+nav {
+  padding: 14px;
+  border-bottom: 1px solid rgba(0,255,247,0.3);
+  box-shadow: 0 0 15px rgba(0,255,247,0.3);
+}
 
-    .stats {
-      margin-top: 16px;
-      font-size: 14px;
-    }
-  </style>
+nav h1 {
+  margin: 0;
+  color: var(--neon);
+  text-shadow: 0 0 15px var(--neon);
+}
+
+/* ---------- LANDING ---------- */
+#landing {
+  padding: 80px 20px;
+}
+
+#landing h2 {
+  font-size: 2.2rem;
+  color: var(--pink);
+  text-shadow: 0 0 15px var(--pink);
+}
+
+#landing p {
+  max-width: 600px;
+  margin: 20px auto;
+  opacity: 0.9;
+}
+
+button {
+  background: transparent;
+  color: white;
+  border: 2px solid var(--neon);
+  padding: 14px 26px;
+  font-size: 1.1rem;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0 0 15px var(--neon);
+}
+
+button:hover {
+  background: rgba(0,255,247,0.15);
+}
+
+/* ---------- GAME ---------- */
+#game {
+  display: none;
+  padding-top: 20px;
+}
+
+#hud {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panel {
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: rgba(0,255,247,0.08);
+  border: 1px solid rgba(0,255,247,0.4);
+  box-shadow: 0 0 12px rgba(0,255,247,0.4);
+}
+
+select {
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 1rem;
+}
+
+/* ---------- TARGET ---------- */
+#target {
+  position: absolute;
+  display: none;
+  cursor: pointer;
+  border-radius: 50%;
+  background: radial-gradient(circle, white, var(--neon));
+  box-shadow:
+    0 0 15px var(--neon),
+    0 0 30px var(--neon),
+    inset 0 0 10px white;
+}
+
+/* ---------- LEADERBOARD ---------- */
+#leaderboard {
+  margin: 30px auto;
+  max-width: 320px;
+}
+
+#leaderboard h3 {
+  color: var(--pink);
+  text-shadow: 0 0 10px var(--pink);
+}
+
+ol {
+  text-align: left;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  margin-top: 60px;
+  padding: 20px;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="card">
-    <h1>⚡ Reflex Game</h1>
-    <p>Click the box as fast as you can!</p>
+<nav>
+  <h1>⚡ NEON CLICK</h1>
+</nav>
 
-    <button id="startBtn">Start</button>
-    <div class="box" id="box"></div>
+<!-- LANDING PAGE -->
+<section id="landing">
+  <h2>Test Your Reflexes</h2>
+  <p>
+    Neon Click is a cyberpunk reflex game.
+    Click the glowing target, build combos, and beat the leaderboard.
+  </p>
+  <button onclick="enterGame()">▶ PLAY NOW</button>
+</section>
 
-    <div class="stats">
-      <div id="time">Reaction: — ms</div>
-      <div id="best">Best: — ms</div>
+<!-- GAME -->
+<section id="game">
+  <div id="hud">
+    <div class="panel" id="score">Score: 0</div>
+    <div class="panel" id="time">Time: 30s</div>
+
+    <div class="panel">
+      Mode:
+      <select id="mode">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
     </div>
+
+    <button onclick="startGame()">START</button>
   </div>
 
-  <script>
-    const startBtn = document.getElementById("startBtn");
-    const box = document.getElementById("box");
-    const timeText = document.getElementById("time");
-    const bestText = document.getElementById("best");
+  <div id="leaderboard" class="panel">
+    <h3>🏆 Leaderboard</h3>
+    <ol id="board"></ol>
+  </div>
+</section>
 
-    let startTime;
-    let best = localStorage.getItem("bestTime");
+<div id="target"></div>
 
-    if (best) bestText.textContent = "Best: " + best + " ms";
+<footer>
+  © 2026 Neon Click — Built with JavaScript
+</footer>
 
-    startBtn.onclick = () => {
-      box.style.display = "none";
-      timeText.textContent = "Reaction: — ms";
+<script>
+const landing = document.getElementById("landing");
+const game = document.getElementById("game");
+const target = document.getElementById("target");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const modeSel = document.getElementById("mode");
+const board = document.getElementById("board");
 
-      const delay = Math.random() * 2000 + 1000;
+let score = 0;
+let timeLeft = 30;
+let timer;
+let running = false;
+let combo = 0;
+let lastHit = 0;
 
-      setTimeout(() => {
-        box.style.display = "block";
-        startTime = performance.now();
-      }, delay);
-    };
+const MODES = {
+  easy: 90,
+  normal: 70,
+  hard: 55
+};
 
-    box.onclick = () => {
-      const reaction = Math.round(performance.now() - startTime);
-      timeText.textContent = "Reaction: " + reaction + " ms";
+function enterGame() {
+  landing.style.display = "none";
+  game.style.display = "block";
+  loadBoard();
+}
 
-      if (!best || reaction < best) {
-        best = reaction;
-        localStorage.setItem("bestTime", best);
-        bestText.textContent = "Best: " + best + " ms";
-      }
+function moveTarget() {
+  const size = MODES[modeSel.value];
+  const topOffset = document.getElementById("hud").offsetHeight + 30;
 
-      box.style.display = "none";
-    };
-  </script>
+  target.style.width = size + "px";
+  target.style.height = size + "px";
+
+  target.style.left = Math.random() * (window.innerWidth - size) + "px";
+  target.style.top =
+    Math.random() * (window.innerHeight - size - topOffset) + topOffset + "px";
+}
+
+function startGame() {
+  if (running) return;
+
+  score = 0;
+  combo = 0;
+  timeLeft = 30;
+  running = true;
+
+  scoreEl.textContent = "Score: 0";
+  timeEl.textContent = "Time: 30s";
+
+  target.style.display = "block";
+  moveTarget();
+
+  timer = setInterval(() => {
+    timeLeft--;
+    timeEl.textContent = "Time: " + timeLeft + "s";
+    if (timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+function endGame() {
+  clearInterval(timer);
+  running = false;
+  target.style.display = "none";
+  saveScore();
+}
+
+target.onclick = e => {
+  e.stopPropagation();
+  if (!running) return;
+
+  const now = Date.now();
+  combo = now - lastHit < 900 ? combo + 1 : 1;
+  lastHit = now;
+
+  score += 1 + combo;
+  scoreEl.textContent = "Score: " + score;
+  moveTarget();
+};
+
+function saveScore() {
+  const name = prompt("Your name?");
+  if (!name) return;
+
+  const data = JSON.parse(localStorage.getItem("neonSiteBoard") || "[]");
+  data.push({ name, score });
+  data.sort((a,b) => b.score - a.score);
+  localStorage.setItem("neonSiteBoard", JSON.stringify(data.slice(0,5)));
+  loadBoard();
+}
+
+function loadBoard() {
+  board.innerHTML = "";
+  const data = JSON.parse(localStorage.getItem("neonSiteBoard") || "[]");
+  data.forEach(e => {
+    const li = document.createElement("li");
+    li.textContent = `${e.name} — ${e.score}`;
+    board.appendChild(li);
+  });
+}
+</script>
 
 </body>
 </html>
