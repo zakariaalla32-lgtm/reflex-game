@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reflex Game ⚡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: radial-gradient(circle at top, #0ff, #020024);
+      color: #0ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #0ff;
+      border-radius: 16px;
+      padding: 24px;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 0 30px #0ff;
+    }
+
+    h1 {
+      margin-top: 0;
+      text-shadow: 0 0 10px #0ff;
+    }
+
+    button {
+      background: #0ff;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #0ff;
+      transition: transform 0.15s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .box {
+      margin: 20px auto;
+      width: 100px;
+      height: 100px;
+      background: #ff00ff;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #ff00ff;
+      cursor: pointer;
+      display: none;
+    }
+
+    .stats {
+      margin-top: 16px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>⚡ Reflex Game</h1>
+    <p>Click the box as fast as you can!</p>
+
+    <button id="startBtn">Start</button>
+    <div class="box" id="box"></div>
+
+    <div class="stats">
+      <div id="time">Reaction: — ms</div>
+      <div id="best">Best: — ms</div>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById("startBtn");
+    const box = document.getElementById("box");
+    const timeText = document.getElementById("time");
+    const bestText = document.getElementById("best");
+
+    let startTime;
+    let best = localStorage.getItem("bestTime");
+
+    if (best) bestText.textContent = "Best: " + best + " ms";
+
+    startBtn.onclick = () => {
+      box.style.display = "none";
+      timeText.textContent = "Reaction: — ms";
+
+      const delay = Math.random() * 2000 + 1000;
+
+      setTimeout(() => {
+        box.style.display = "block";
+        startTime = performance.now();
+      }, delay);
+    };
+
+    box.onclick = () => {
+      const reaction = Math.round(performance.now() - startTime);
+      timeText.textContent = "Reaction: " + reaction + " ms";
+
+      if (!best || reaction < best) {
+        best = reaction;
+        localStorage.setItem("bestTime", best);
+        bestText.textContent = "Best: " + best + " ms";
+      }
+
+      box.style.display = "none";
+    };
+  </script>
+
+</body>
+</html>
